@@ -1,22 +1,17 @@
-#import FirstAPI class from the fastapi
+#import FirstAPI class from the fastapi to create the web instance
 from fastapi import FastAPI
+#import tthe custom routes.py where endpoints live
+from customer_service import routes
 
-#create the FastAPI application instance
-app = FastAPI
+#create the FastAPI application instance(gives it title + version)
+app = FastAPI(title="Customer Service", version="1.0.0")
 
-#App startup event(runs when the app starts)
-@app.on_event("startup")
-async def startup(): #decorator tells FastAPI to run this function during startup
-	pass
+#Register the router with the app
+#attach all customer-related routes under /customers path
+#and tag them with "Customer APIs"
+app.include_router(routes.router, prefix="/customers", tags=["Customer APIs"])
 
-#App shutdown event(run when the app stops)
-@app.on_event("shutdown")
-async def shutdown(): #asynchronous function used to handle clean up tasks when your FasAPI is shutting down
-	pass
-
-#Routers
-
-#Root route to confirm the app is running
-@app.get("/") #Route decorator- Tells FasAPI to call func below when the client sends a GET request to the root URL(/)
-async def read_root(): #Asynchronous function FastAPI will invoke when someone visits /
-	return{"message","Welcome to my API"} #Returns JSON response, FastAPI converts Python dictionaries into JSON for HTTP responses
+#Define the root endpoint
+@app.get("/")
+async def root():
+    return{"message": "Customer service is live"}
